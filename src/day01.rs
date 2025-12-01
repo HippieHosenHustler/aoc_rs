@@ -1,6 +1,4 @@
-use std::fs::File;
-use std::io::{self, BufRead};
-use std::path::Path;
+use crate::file_helpers::read_lines;
 
 struct Rotation {
     dir: Direction,
@@ -68,12 +66,4 @@ fn get_next_position(current_position: i32, rotation: &Rotation) -> (i32, i32) {
     };
 
     (end_position, zero_passes)
-}
-
-fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-where
-    P: AsRef<Path>,
-{
-    let file = File::open(filename)?;
-    Ok(io::BufReader::new(file).lines())
 }
