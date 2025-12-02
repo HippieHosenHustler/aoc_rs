@@ -2,6 +2,7 @@ use std::env;
 use std::process;
 
 mod day01;
+mod day02;
 mod file_helpers;
 
 fn main() {
@@ -24,6 +25,7 @@ fn main() {
 
     match number {
         1 => day01::solve(input_file),
+        2 => day02::solve(input_file),
         // add more cases as needed
         _ => {
             eprintln!("Error: Unsupported number '{}'.", number);
