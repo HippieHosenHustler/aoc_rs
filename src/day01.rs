@@ -15,16 +15,15 @@ pub fn solve(input_file: &str) {
     let mut zero_counter = 0;
     let mut zero_passes = 0;
 
-    if let Ok(lines) = read_lines(input_file) {
-        // Consumes the iterator, returns an (Optional) String
-        for line in lines.map_while(Result::ok) {
-            let rotation = parse_rotation(&line);
-            let result = get_next_position(position, &rotation);
-            position = result.0;
-            zero_passes += result.1;
-            if position == 0 {
-                zero_counter += 1;
-            }
+    let lines = read_lines(input_file).expect("Could not read lines from file");
+
+    for line in lines.map_while(Result::ok) {
+        let rotation = parse_rotation(&line);
+        let result = get_next_position(position, &rotation);
+        position = result.0;
+        zero_passes += result.1;
+        if position == 0 {
+            zero_counter += 1;
         }
     }
 
