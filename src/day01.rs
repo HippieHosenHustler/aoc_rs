@@ -10,8 +10,11 @@ enum Direction {
     R,
 }
 
+const TRACK_SIZE: i32 = 100;
+const STARTING_POSITION: i32 = 50;
+
 pub fn solve(input_file: &str) {
-    let mut position: i32 = 50;
+    let mut position = STARTING_POSITION;
     let mut zero_counter = 0;
     let mut zero_passes = 0;
 
@@ -19,7 +22,7 @@ pub fn solve(input_file: &str) {
 
     for line in lines.map_while(Result::ok) {
         let rotation = parse_rotation(&line);
-        let result = get_next_position(position, &rotation);
+        let result = get_next_position(position, rotation);
         position = result.0;
         zero_passes += result.1;
         if position == 0 {
@@ -42,26 +45,33 @@ fn parse_rotation(s: &str) -> Rotation {
     Rotation { dir, value }
 }
 
-fn get_next_position(current_position: i32, rotation: &Rotation) -> (i32, i32) {
-    let p = current_position;
-    let d = rotation.value;
+type PositionResult = (i32, i32);
+/**
+ * Calculates the next posiotion and counts how many times we cross position 0.
+ * on a circular Track of length TRACK_SIZE.
+ *
+ * @returns (end_position, zero_passes)
+ */
+fn get_next_position(current_position: i32, rotation: Rotation) -> PositionResult {
+    let distance = rotation.value;
 
     let zero_passes = match rotation.dir {
         Direction::L => {
             // Moving left: count multiples of 100 in range [p-d, p)
             // Formula: floor((p-1)/100) - floor((p-d-1)/100)
-            (p - 1).div_euclid(100) - (p - d - 1).div_euclid(100)
+            (current_position - 1).div_euclid(TRACK_SIZE)
+                - (current_position - distance - 1).div_euclid(TRACK_SIZE)
         }
         Direction::R => {
             // Moving right: count multiples of 100 in range (p, p+d]
             // Formula: floor((p+d)/100) - floor(p/100)
-            (p + d).div_euclid(100) - p.div_euclid(100)
+            (current_position + distance).div_euclid(100) - current_position.div_euclid(100)
         }
     };
 
     let end_position = match rotation.dir {
-        Direction::L => (p - d).rem_euclid(100),
-        Direction::R => (p + d).rem_euclid(100),
+        Direction::L => (current_position - distance).rem_euclid(TRACK_SIZE),
+        Direction::R => (current_position + distance).rem_euclid(TRACK_SIZE),
     };
 
     (end_position, zero_passes)
