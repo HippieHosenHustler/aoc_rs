@@ -20,10 +20,11 @@ impl ProductRange {
     fn find_invalid_ids_2(&self) -> Vec<i64> {
         let mut invalid_ids = Vec::new();
         for id in self.start..=self.end {
-            if is_valid_product_id_2(id) {
+            if !is_valid_product_id_2(id) {
                 invalid_ids.push(id);
             }
         }
+
         invalid_ids
     }
 }
@@ -31,6 +32,7 @@ impl ProductRange {
 pub fn solve(input_file: &str) {
     let file_contents = fs::read_to_string(input_file).expect("Could not read file");
     let mut sum_invalid: i64 = 0;
+    let mut sum_invalid_2: i64 = 0;
 
     let ranges = split_into_ranges(&file_contents);
 
@@ -42,6 +44,16 @@ pub fn solve(input_file: &str) {
     println!(
         "Sum of all invalid product IDs (part 1 solution): {}",
         sum_invalid
+    );
+
+    ranges.iter().for_each(|range| {
+        let invalid_ids = range.find_invalid_ids_2();
+        invalid_ids.iter().for_each(|id| sum_invalid_2 += id);
+    });
+
+    println!(
+        "Sum of all invalid product IDs (part 2 solution): {}",
+        sum_invalid_2
     );
 }
 
@@ -80,12 +92,28 @@ fn is_valid_product_id_2(id: i64) -> bool {
 
     let len = digits.len();
 
-    if len == 1 || len % 2 != 0 {
-        return false;
+    if len == 1 {
+        return true;
     }
 
-    for i in 0..(len / 2) {
-        if digits[i] != digits[(len / 2) + i] {
+    for i in 2..=len {
+        if len % i != 0 {
+            continue;
+        }
+
+        // split digits into i equal parts and compare
+        let chunk_size = len / i;
+        let chunks: Vec<&[u32]> = digits.chunks(chunk_size).collect();
+
+        let mut all_equal = true;
+
+        for chunk in &chunks[1..] {
+            if chunk != &chunks[0] {
+                all_equal = false;
+            }
+        }
+
+        if all_equal {
             return false;
         }
     }
