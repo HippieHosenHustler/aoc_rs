@@ -8,6 +8,12 @@ pub trait DaySolution {
     fn solve(input_file: &str);
 }
 
+/// Trait that all year solutions must implement
+pub trait YearSolution {
+    /// pass the day and input file to solve the puzzle
+    fn solve(day: u32, input_file: &str);
+}
+
 pub fn read_lines<P>(filename: P) -> Vec<String>
 where
     P: AsRef<Path>,
