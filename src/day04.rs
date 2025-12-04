@@ -5,11 +5,9 @@ const ROLL_CHARACTER: char = '@';
 pub fn solve(input_file: &str) {
     let lines = read_lines(input_file);
 
-    let matrix = build_matrix(lines);
+    let mut matrix = build_matrix(lines);
 
     let mut accessible_rolls = 0;
-
-    let mut spots = vec![];
 
     for row in 0..matrix.len() {
         for col in 0..matrix[row].len() {
@@ -18,7 +16,6 @@ pub fn solve(input_file: &str) {
                     < 4
             {
                 accessible_rolls += 1;
-                spots.push((row, col));
             }
         }
     }
@@ -26,6 +23,33 @@ pub fn solve(input_file: &str) {
     println!(
         "Total accessible rolls (part 1 solution): {}",
         accessible_rolls
+    );
+
+    let mut accessible_rolls_total = 0;
+
+    while accessible_rolls > 0 {
+        accessible_rolls = 0;
+        for row in 0..matrix.len() {
+            for col in 0..matrix[row].len() {
+                if matrix[row][col] == ROLL_CHARACTER
+                    && find_surrounding_character_occurences(
+                        matrix.clone(),
+                        row,
+                        col,
+                        ROLL_CHARACTER,
+                    ) < 4
+                {
+                    accessible_rolls += 1;
+                    matrix[row][col] = '.';
+                }
+            }
+        }
+        accessible_rolls_total += accessible_rolls;
+    }
+
+    println!(
+        "Total accessible rolls including chain reactions (part 2 solution): {}",
+        accessible_rolls_total
     );
 }
 
