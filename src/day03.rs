@@ -4,10 +4,10 @@ pub fn solve(input_file: &str) {
     let mut total_joltage = 0;
     let mut total_overdrive_joltage: i128 = 0;
 
-    let lines = read_lines(input_file).expect("Could not read lines from file");
+    let lines = read_lines(input_file);
 
     for line in lines {
-        let line = line.expect("Could not read line from file");
+        let line = line;
         total_joltage += calculate_maximum_joltage(&line);
         total_overdrive_joltage += calculate_overdrive_joltage(&line);
     }

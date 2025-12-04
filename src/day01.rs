@@ -18,9 +18,9 @@ pub fn solve(input_file: &str) {
     let mut zero_counter = 0;
     let mut zero_passes = 0;
 
-    let lines = read_lines(input_file).expect("Could not read lines from file");
+    let lines = read_lines(input_file);
 
-    for line in lines.map_while(Result::ok) {
+    for line in lines {
         let rotation = parse_rotation(&line);
         let result = get_next_position(position, rotation);
         position = result.0;
