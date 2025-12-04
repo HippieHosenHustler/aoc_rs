@@ -1,4 +1,29 @@
-use shared::read_lines;
+use shared::{read_lines, DaySolution};
+
+pub struct Day01;
+
+impl DaySolution for Day01 {
+    fn solve(input_file: &str) {
+        let mut position = STARTING_POSITION;
+        let mut zero_counter = 0;
+        let mut zero_passes = 0;
+
+        let lines = read_lines(input_file);
+
+        for line in lines {
+            let rotation = parse_rotation(&line);
+            let result = get_next_position(position, rotation);
+            position = result.0;
+            zero_passes += result.1;
+            if position == 0 {
+                zero_counter += 1;
+            }
+        }
+
+        println!("Number of zeroes (part 1 solution): {}", zero_counter);
+        println!("Zero passes (part 2 solution): {}", zero_passes);
+    }
+}
 
 struct Rotation {
     dir: Direction,
@@ -12,27 +37,6 @@ enum Direction {
 
 const TRACK_SIZE: i32 = 100;
 const STARTING_POSITION: i32 = 50;
-
-pub fn solve(input_file: &str) {
-    let mut position = STARTING_POSITION;
-    let mut zero_counter = 0;
-    let mut zero_passes = 0;
-
-    let lines = read_lines(input_file);
-
-    for line in lines {
-        let rotation = parse_rotation(&line);
-        let result = get_next_position(position, rotation);
-        position = result.0;
-        zero_passes += result.1;
-        if position == 0 {
-            zero_counter += 1;
-        }
-    }
-
-    println!("Number of zeroes (part 1 solution): {}", zero_counter);
-    println!("Zero passes (part 2 solution): {}", zero_passes);
-}
 
 fn parse_rotation(s: &str) -> Rotation {
     let (dir_char, value_str) = s.split_at(1);

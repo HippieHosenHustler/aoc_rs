@@ -1,4 +1,37 @@
 use std::fs;
+use shared::DaySolution;
+
+pub struct Day02;
+
+impl DaySolution for Day02 {
+    fn solve(input_file: &str) {
+        let file_contents = fs::read_to_string(input_file).expect("Could not read file");
+        let mut sum_invalid: i64 = 0;
+        let mut sum_invalid_2: i64 = 0;
+
+        let ranges = split_into_ranges(&file_contents);
+
+        ranges.iter().for_each(|range| {
+            let invalid_ids = range.find_invalid_ids();
+            invalid_ids.iter().for_each(|id| sum_invalid += id);
+        });
+
+        println!(
+            "Sum of all invalid product IDs (part 1 solution): {}",
+            sum_invalid
+        );
+
+        ranges.iter().for_each(|range| {
+            let invalid_ids = range.find_invalid_ids_2();
+            invalid_ids.iter().for_each(|id| sum_invalid_2 += id);
+        });
+
+        println!(
+            "Sum of all invalid product IDs (part 2 solution): {}",
+            sum_invalid_2
+        );
+    }
+}
 
 #[derive(Debug)]
 struct ProductRange {
@@ -27,34 +60,6 @@ impl ProductRange {
 
         invalid_ids
     }
-}
-
-pub fn solve(input_file: &str) {
-    let file_contents = fs::read_to_string(input_file).expect("Could not read file");
-    let mut sum_invalid: i64 = 0;
-    let mut sum_invalid_2: i64 = 0;
-
-    let ranges = split_into_ranges(&file_contents);
-
-    ranges.iter().for_each(|range| {
-        let invalid_ids = range.find_invalid_ids();
-        invalid_ids.iter().for_each(|id| sum_invalid += id);
-    });
-
-    println!(
-        "Sum of all invalid product IDs (part 1 solution): {}",
-        sum_invalid
-    );
-
-    ranges.iter().for_each(|range| {
-        let invalid_ids = range.find_invalid_ids_2();
-        invalid_ids.iter().for_each(|id| sum_invalid_2 += id);
-    });
-
-    println!(
-        "Sum of all invalid product IDs (part 2 solution): {}",
-        sum_invalid_2
-    );
 }
 
 fn split_into_ranges(s: &str) -> Vec<ProductRange> {
