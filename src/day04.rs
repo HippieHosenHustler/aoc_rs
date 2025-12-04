@@ -84,37 +84,13 @@ fn find_surrounding_character_occurrences(
 }
 
 fn get_neighbors(row: usize, col: usize, max_rows: usize, max_cols: usize) -> Vec<(i32, i32)> {
-    let mut result = Vec::new();
-
-    // Prior row
-    if row > 0 {
-        if col > 0 {
-            result.push((-1, -1))
-        }
-        result.push((-1, 0));
-        if col != max_cols - 1 {
-            result.push((-1, 1));
-        }
-    }
-
-    // Current row
-    if col > 0 {
-        result.push((0, -1));
-    }
-    if col != max_cols - 1 {
-        result.push((0, 1));
-    }
-
-    // Next row
-    if row != max_rows - 1 {
-        if col > 0 {
-            result.push((1, -1))
-        }
-        result.push((1, 0));
-        if col != max_cols - 1 {
-            result.push((1, 1));
-        }
-    }
-
-    result
+    (-1..=1)
+        .flat_map(|dr| (-1..=1).map(move |dc| (dr, dc)))
+        .filter(|&(dr, dc)| dr != 0 || dc != 0) // Exclude center (0, 0)
+        .filter(|&(dr, dc)| {
+            let new_row = row as i32 + dr;
+            let new_col = col as i32 + dc;
+            new_row >= 0 && new_row < max_rows as i32 && new_col >= 0 && new_col < max_cols as i32
+        })
+        .collect()
 }
