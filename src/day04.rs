@@ -1,6 +1,7 @@
 use crate::file_helpers::read_lines;
 
 const ROLL_CHARACTER: char = '@';
+const MAX_NEIGHBORS_FOR_ACCESIBLE_ROLL: u32 = 4;
 
 pub fn solve(input_file: &str) {
     let lines = read_lines(input_file);
@@ -12,8 +13,8 @@ pub fn solve(input_file: &str) {
     for row in 0..matrix.len() {
         for col in 0..matrix[row].len() {
             if matrix[row][col] == ROLL_CHARACTER
-                && find_surrounding_character_occurences(matrix.clone(), row, col, ROLL_CHARACTER)
-                    < 4
+                && find_surrounding_character_occurrences(&matrix, row, col, ROLL_CHARACTER)
+                    < MAX_NEIGHBORS_FOR_ACCESIBLE_ROLL
             {
                 accessible_rolls += 1;
             }
@@ -32,12 +33,8 @@ pub fn solve(input_file: &str) {
         for row in 0..matrix.len() {
             for col in 0..matrix[row].len() {
                 if matrix[row][col] == ROLL_CHARACTER
-                    && find_surrounding_character_occurences(
-                        matrix.clone(),
-                        row,
-                        col,
-                        ROLL_CHARACTER,
-                    ) < 4
+                    && find_surrounding_character_occurrences(&matrix, row, col, ROLL_CHARACTER)
+                        < MAX_NEIGHBORS_FOR_ACCESIBLE_ROLL
                 {
                     accessible_rolls += 1;
                     matrix[row][col] = '.';
@@ -60,24 +57,30 @@ fn build_matrix(file_contents: Vec<String>) -> Vec<Vec<char>> {
         .collect()
 }
 
-fn find_surrounding_character_occurences(
-    matrix: Vec<Vec<char>>,
+fn find_surrounding_character_occurrences(
+    matrix: &Vec<Vec<char>>,
     line_number: usize,
     col_number: usize,
     character: char,
 ) -> u32 {
-    get_neighbors(line_number, col_number, matrix.len(), matrix[0].len())
-        .into_iter()
-        .filter(|(dx, dy)| {
-            let neighbor_row = (line_number as i32 + dx) as usize;
-            let neighbor_col = (col_number as i32 + dy) as usize;
+    // ensure we do not run out of bounds even on an empty matrix
+    if matrix.len() == 0 || matrix[0].len() == 0 {
+        return 0;
+    }
+    get_neighbors(
+        line_number,
+        col_number,
+        matrix.len(),
+        matrix[line_number].len(),
+    )
+    .into_iter()
+    .filter(|(row_offset, col_offset)| {
+        let neighbor_row = (line_number as i32 + row_offset) as usize;
+        let neighbor_col = (col_number as i32 + col_offset) as usize;
 
-            matrix[neighbor_row][neighbor_col] == character
-        })
-        .collect::<Vec<(i32, i32)>>()
-        .len()
-        .try_into()
-        .unwrap()
+        matrix[neighbor_row][neighbor_col] == character
+    })
+    .count() as u32
 }
 
 fn get_neighbors(row: usize, col: usize, max_rows: usize, max_cols: usize) -> Vec<(i32, i32)> {
