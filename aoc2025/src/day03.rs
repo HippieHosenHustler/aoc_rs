@@ -1,10 +1,10 @@
-use shared::read_lines;
+use shared::lines_to_vec;
 
-pub fn solve(input_file: &str) {
+pub fn solve(input: &str) {
     let mut total_joltage = 0;
     let mut total_overdrive_joltage: i128 = 0;
 
-    let lines = read_lines(input_file);
+    let lines = lines_to_vec(input);
 
     for line in lines {
         let line = line;

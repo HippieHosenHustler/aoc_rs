@@ -1,11 +1,8 @@
-use std::fs;
-
-pub fn solve(input_file: &str) {
-    let file_contents = fs::read_to_string(input_file).expect("Could not read file");
+pub fn solve(input: &str) {
     let mut sum_invalid: i64 = 0;
     let mut sum_invalid_2: i64 = 0;
 
-    let ranges = split_into_ranges(&file_contents);
+    let ranges = split_into_ranges(input);
 
     ranges.iter().for_each(|range| {
         let invalid_ids = range.find_invalid_ids();

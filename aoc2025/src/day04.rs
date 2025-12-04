@@ -1,7 +1,7 @@
-use shared::read_lines;
+use shared::lines_to_vec;
 
-pub fn solve(input_file: &str) {
-    let lines = read_lines(input_file);
+pub fn solve(input: &str) {
+    let lines = lines_to_vec(input);
     let matrix = build_matrix(lines);
 
     let part1 = count_accessible_rolls(&matrix);

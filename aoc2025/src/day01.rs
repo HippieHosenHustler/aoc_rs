@@ -1,11 +1,11 @@
-use shared::read_lines;
+use shared::lines_to_vec;
 
-pub fn solve(input_file: &str) {
+pub fn solve(input: &str) {
     let mut position = STARTING_POSITION;
     let mut zero_counter = 0;
     let mut zero_passes = 0;
 
-    let lines = read_lines(input_file);
+    let lines = lines_to_vec(input);
 
     for line in lines {
         let rotation = parse_rotation(&line);

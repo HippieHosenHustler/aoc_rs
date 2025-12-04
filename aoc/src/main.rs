@@ -28,8 +28,13 @@ fn main() {
 
     let input_file = &args[3];
 
+    let input = std::fs::read_to_string(input_file).unwrap_or_else(|_| {
+        eprintln!("Error: Could not read input file '{}'.", input_file);
+        process::exit(1);
+    });
+
     match year {
-        2025 => aoc2025::solve(day, input_file),
+        2025 => aoc2025::solve(day, &input),
         _ => {
             eprintln!("Error: Year {} is not yet implemented.", year);
             eprintln!("Available years: 2025");
