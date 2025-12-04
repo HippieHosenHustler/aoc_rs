@@ -4,6 +4,7 @@ use std::process;
 mod day01;
 mod day02;
 mod day03;
+mod day04;
 mod file_helpers;
 
 fn main() {
@@ -28,6 +29,7 @@ fn main() {
         1 => day01::solve(input_file),
         2 => day02::solve(input_file),
         3 => day03::solve(input_file),
+        4 => day04::solve(input_file),
         // add more cases as needed
         _ => {
             eprintln!("Error: Unsupported number '{}'.", number);
