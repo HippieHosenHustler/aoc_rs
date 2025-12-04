@@ -29,23 +29,10 @@ fn main() {
     let input_file = &args[3];
 
     match year {
-        2025 => solve_2025(day, input_file),
+        2025 => aoc2025::solve(day, input_file),
         _ => {
             eprintln!("Error: Year {} is not yet implemented.", year);
             eprintln!("Available years: 2025");
-            process::exit(1);
-        }
-    }
-}
-
-fn solve_2025(day: u32, input_file: &str) {
-    match day {
-        1 => aoc2025::day01::solve(input_file),
-        2 => aoc2025::day02::solve(input_file),
-        3 => aoc2025::day03::solve(input_file),
-        4 => aoc2025::day04::solve(input_file),
-        _ => {
-            eprintln!("Error: Day {} for year 2025 is not yet implemented.", day);
             process::exit(1);
         }
     }
