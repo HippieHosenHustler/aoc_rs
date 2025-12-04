@@ -1,27 +1,22 @@
 use shared::read_lines;
-use shared::DaySolution;
 
-pub struct Day03;
+pub fn solve(input_file: &str) {
+    let mut total_joltage = 0;
+    let mut total_overdrive_joltage: i128 = 0;
 
-impl DaySolution for Day03 {
-    fn solve(input_file: &str) {
-        let mut total_joltage = 0;
-        let mut total_overdrive_joltage: i128 = 0;
+    let lines = read_lines(input_file);
 
-        let lines = read_lines(input_file);
-
-        for line in lines {
-            let line = line;
-            total_joltage += calculate_maximum_joltage(&line);
-            total_overdrive_joltage += calculate_overdrive_joltage(&line);
-        }
-
-        println!("Total maximum joltage (part 1 solution): {}", total_joltage);
-        println!(
-            "Total overdrive joltage (part 2 solution): {}",
-            total_overdrive_joltage
-        );
+    for line in lines {
+        let line = line;
+        total_joltage += calculate_maximum_joltage(&line);
+        total_overdrive_joltage += calculate_overdrive_joltage(&line);
     }
+
+    println!("Total maximum joltage (part 1 solution): {}", total_joltage);
+    println!(
+        "Total overdrive joltage (part 2 solution): {}",
+        total_overdrive_joltage
+    );
 }
 
 fn calculate_maximum_joltage(bank: &String) -> i32 {

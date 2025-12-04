@@ -1,19 +1,14 @@
 use shared::read_lines;
-use shared::DaySolution;
 
-pub struct Day04;
+pub fn solve(input_file: &str) {
+    let lines = read_lines(input_file);
+    let matrix = build_matrix(lines);
 
-impl DaySolution for Day04 {
-    fn solve(input_file: &str) {
-        let lines = read_lines(input_file);
-        let matrix = build_matrix(lines);
+    let part1 = count_accessible_rolls(&matrix);
+    println!("Part 1: {}", part1);
 
-        let part1 = count_accessible_rolls(&matrix);
-        println!("Part 1: {}", part1);
-
-        let part2 = count_accessible_rolls_with_chain_reaction(matrix);
-        println!("Part 2: {}", part2);
-    }
+    let part2 = count_accessible_rolls_with_chain_reaction(matrix);
+    println!("Part 2: {}", part2);
 }
 
 const ROLL_CHARACTER: char = '@';
