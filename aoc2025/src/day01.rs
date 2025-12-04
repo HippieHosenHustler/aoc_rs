@@ -1,4 +1,4 @@
-use crate::file_helpers::read_lines;
+use shared::read_lines;
 
 struct Rotation {
     dir: Direction,

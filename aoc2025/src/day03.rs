@@ -1,4 +1,4 @@
-use crate::file_helpers::read_lines;
+use shared::read_lines;
 
 pub fn solve(input_file: &str) {
     let mut total_joltage = 0;

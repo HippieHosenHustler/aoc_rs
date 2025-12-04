@@ -1,4 +1,4 @@
-use crate::file_helpers::read_lines;
+use shared::read_lines;
 
 const ROLL_CHARACTER: char = '@';
 const MAX_NEIGHBORS_FOR_ACCESIBLE_ROLL: usize = 4;
