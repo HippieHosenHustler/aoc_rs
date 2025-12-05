@@ -1,28 +1,20 @@
-pub fn solve(input: &str) {
-    let mut sum_invalid: i64 = 0;
-    let mut sum_invalid_2: i64 = 0;
+pub fn solve(input: &str) -> (String, String) {
+    let mut part1: i64 = 0;
+    let mut part2: i64 = 0;
 
     let ranges = split_into_ranges(input);
 
     ranges.iter().for_each(|range| {
         let invalid_ids = range.find_invalid_ids();
-        invalid_ids.iter().for_each(|id| sum_invalid += id);
+        invalid_ids.iter().for_each(|id| part1 += id);
     });
-
-    println!(
-        "Sum of all invalid product IDs (part 1 solution): {}",
-        sum_invalid
-    );
 
     ranges.iter().for_each(|range| {
         let invalid_ids = range.find_invalid_ids_2();
-        invalid_ids.iter().for_each(|id| sum_invalid_2 += id);
+        invalid_ids.iter().for_each(|id| part2 += id);
     });
 
-    println!(
-        "Sum of all invalid product IDs (part 2 solution): {}",
-        sum_invalid_2
-    );
+    (part1.to_string(), part2.to_string())
 }
 
 #[derive(Debug)]

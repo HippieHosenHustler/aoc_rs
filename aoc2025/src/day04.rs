@@ -1,14 +1,13 @@
 use shared::lines_to_vec;
 
-pub fn solve(input: &str) {
+pub fn solve(input: &str) -> (String, String) {
     let lines = lines_to_vec(input);
     let matrix = build_matrix(lines);
 
     let part1 = count_accessible_rolls(&matrix);
-    println!("Part 1: {}", part1);
-
     let part2 = count_accessible_rolls_with_chain_reaction(matrix);
-    println!("Part 2: {}", part2);
+
+    (part1.to_string(), part2.to_string())
 }
 
 const ROLL_CHARACTER: char = '@';

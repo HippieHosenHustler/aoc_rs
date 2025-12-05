@@ -1,22 +1,18 @@
 use shared::lines_to_vec;
 
-pub fn solve(input: &str) {
-    let mut total_joltage = 0;
-    let mut total_overdrive_joltage: i128 = 0;
+pub fn solve(input: &str) -> (String, String) {
+    let mut part1 = 0;
+    let mut part2: i128 = 0;
 
     let lines = lines_to_vec(input);
 
     for line in lines {
         let line = line;
-        total_joltage += calculate_maximum_joltage(&line);
-        total_overdrive_joltage += calculate_overdrive_joltage(&line);
+        part1 += calculate_maximum_joltage(&line);
+        part2 += calculate_overdrive_joltage(&line);
     }
 
-    println!("Total maximum joltage (part 1 solution): {}", total_joltage);
-    println!(
-        "Total overdrive joltage (part 2 solution): {}",
-        total_overdrive_joltage
-    );
+    (part1.to_string(), part2.to_string())
 }
 
 fn calculate_maximum_joltage(bank: &String) -> i32 {

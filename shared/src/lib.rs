@@ -10,7 +10,11 @@ macro_rules! register_days {
         match $day_var {
             // For each pair, generate a match arm
             $(
-                $day => $module::solve($input_var),
+                $day => {
+                    let (part1, part2) = $module::solve($input_var);
+                    println!("Part 1: {}", part1);
+                    println!("Part 2: {}", part2);
+                },
             )+
             // Default case for unimplemented days
             _ => {

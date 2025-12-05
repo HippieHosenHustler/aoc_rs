@@ -1,9 +1,9 @@
 use shared::lines_to_vec;
 
-pub fn solve(input: &str) {
+pub fn solve(input: &str) -> (String, String) {
     let mut position = STARTING_POSITION;
-    let mut zero_counter = 0;
-    let mut zero_passes = 0;
+    let mut part1 = 0;
+    let mut part2 = 0;
 
     let lines = lines_to_vec(input);
 
@@ -11,14 +11,13 @@ pub fn solve(input: &str) {
         let rotation = parse_rotation(&line);
         let result = get_next_position(position, rotation);
         position = result.0;
-        zero_passes += result.1;
+        part2 += result.1;
         if position == 0 {
-            zero_counter += 1;
+            part1 += 1;
         }
     }
 
-    println!("Number of zeroes (part 1 solution): {}", zero_counter);
-    println!("Zero passes (part 2 solution): {}", zero_passes);
+    (part1.to_string(), part2.to_string())
 }
 
 struct Rotation {
