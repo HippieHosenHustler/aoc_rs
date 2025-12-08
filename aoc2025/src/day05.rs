@@ -8,13 +8,13 @@ pub fn solve(input: &str) -> (String, String) {
     let ranges = build_ranges(input);
     let ingredients = build_ingredient_list(input);
 
-    let part1 = find_amount_of_fresh_ingredients(&ranges, ingredients);
+    let part1 = find_amount_of_fresh_ingredients(&ranges, &ingredients);
     let part2 = find_all_fresh_ingredient_ids(&ranges);
 
     (part1.to_string(), part2.to_string())
 }
 
-fn find_amount_of_fresh_ingredients(ranges: &Vec<Range>, ingredients: Vec<u64>) -> usize {
+fn find_amount_of_fresh_ingredients(ranges: &[Range], ingredients: &[u64]) -> usize {
     ingredients
         .iter()
         .filter(|&&ingredient| {
@@ -59,10 +59,7 @@ fn find_all_fresh_ingredient_ids(ranges: &Vec<Range>) -> u64 {
         end: current_end,
     });
 
-    merged_ranges.iter().fold(0, |mut acc, range| {
-        acc += range.end - range.start + 1;
-        acc
-    })
+    merged_ranges.iter().map(|r| r.end + 1).sum()
 }
 
 fn build_ranges(input: &str) -> Vec<Range> {
