@@ -28,14 +28,11 @@ fn find_amount_of_fresh_ingredients(ranges: &[Range], ingredients: &[u64]) -> us
 fn find_all_fresh_ingredient_ids(ranges: &Vec<Range>) -> u64 {
     let mut merged_ranges = Vec::new();
 
-    let mut sorted_ranges = ranges.clone();
-    sorted_ranges.sort_by_key(|r| r.start);
+    let mut current_start = ranges[0].start;
+    let mut current_end = ranges[0].end;
 
-    let mut current_start = sorted_ranges[0].start;
-    let mut current_end = sorted_ranges[0].end;
-
-    for i in 1..sorted_ranges.len() {
-        let range = &sorted_ranges[i];
+    for i in 1..ranges.len() {
+        let range = &ranges[i];
 
         match range.start.cmp(&(current_end + 1)) {
             std::cmp::Ordering::Less | std::cmp::Ordering::Equal => {
@@ -59,13 +56,13 @@ fn find_all_fresh_ingredient_ids(ranges: &Vec<Range>) -> u64 {
         end: current_end,
     });
 
-    merged_ranges.iter().map(|r| r.end + 1).sum()
+    merged_ranges.iter().map(|r| r.end - r.start + 1).sum()
 }
 
 fn build_ranges(input: &str) -> Vec<Range> {
     let empty_index = input.lines().position(|line| line.is_empty()).unwrap();
 
-    input
+    let mut ranges: Vec<Range> = input
         .lines()
         .take(empty_index)
         .map(|line| {
@@ -75,7 +72,10 @@ fn build_ranges(input: &str) -> Vec<Range> {
                 end: parts[1].parse().unwrap(),
             }
         })
-        .collect()
+        .collect();
+
+    ranges.sort_by_key(|r| r.start);
+    ranges
 }
 
 fn build_ingredient_list(input: &str) -> Vec<u64> {
