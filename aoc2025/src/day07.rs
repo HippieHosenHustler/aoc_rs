@@ -1,11 +1,11 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use shared::lines_to_vec;
 
 pub fn solve(input: &str) -> (String, String) {
     let lines = lines_to_vec(input);
 
-    let starting_position = find_starting_position(lines.first().unwrap());
+    let starting_position = find_starting_position(lines.first().expect("Expected to have lines"));
 
     let part1 = count_splits(&lines, &starting_position);
 
@@ -16,27 +16,28 @@ pub fn solve(input: &str) -> (String, String) {
 }
 
 fn count_splits(lines: &Vec<String>, starting_position: &usize) -> usize {
-    let mut beam_positions = Vec::new();
+    let mut beam_positions = HashSet::new();
     let mut split_events = 0;
 
-    beam_positions.push(*starting_position);
+    beam_positions.insert(*starting_position);
 
     lines.iter().skip(1).for_each(|line| {
-        let chars = line.chars();
+        let chars: Vec<char> = line.chars().collect();
 
-        beam_positions.clone().iter().for_each(|&pos| {
-            if chars.clone().nth(pos) == Some('^') {
+        let positions_to_process: Vec<_> = beam_positions.drain().collect();
+        for pos in positions_to_process {
+            if chars[pos] == '^' {
                 split_events += 1;
-
-                if beam_positions.contains(&(pos - 1)) == false {
-                    beam_positions.push(pos - 1);
+                if pos > 0 {
+                    beam_positions.insert(pos - 1);
                 }
-                beam_positions.remove(beam_positions.iter().position(|&i| i == pos).unwrap());
-                if beam_positions.contains(&(pos + 1)) == false {
-                    beam_positions.push(pos + 1);
+                if pos < chars.len() - 1 {
+                    beam_positions.insert(pos + 1);
                 }
+            } else {
+                beam_positions.insert(pos);
             }
-        });
+        }
     });
 
     split_events
@@ -55,7 +56,8 @@ fn count_realities(
 
     for (offset, line) in lines.iter().skip(*row).enumerate() {
         let current_row = *row + offset;
-        let char = line.chars().nth(*starting_position).unwrap();
+        let chars = line.chars().collect::<Vec<char>>();
+        let char = chars[*starting_position];
 
         if char == '^' {
             let mut total_count = 0;
@@ -79,5 +81,8 @@ fn count_realities(
 }
 
 fn find_starting_position(first_line: &String) -> usize {
-    first_line.chars().position(|p| p == 'S').unwrap()
+    first_line
+        .chars()
+        .position(|p| p == 'S')
+        .expect("Expected 'S' in first line")
 }
