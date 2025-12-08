@@ -26,11 +26,17 @@ enum Method {
 
 pub fn solve(input: &str) -> (String, String) {
     let lines = lines_to_vec(input);
-    let problems = build_problems(&lines);
 
-    let part1 = problems.iter().map(|p| p.solve()).sum::<u64>();
+    let part1 = build_problems(&lines)
+        .iter()
+        .map(|p| p.solve())
+        .sum::<u64>();
+    let part2 = build_cephalopod_problems(&lines)
+        .iter()
+        .map(|p| p.solve())
+        .sum::<u64>();
 
-    (part1.to_string(), "".to_string())
+    (part1.to_string(), part2.to_string())
 }
 
 fn build_problems(input: &Vec<String>) -> Vec<Problem> {
@@ -69,6 +75,70 @@ fn build_problems(input: &Vec<String>) -> Vec<Problem> {
                 }
             }
         }
+    }
+
+    problems
+}
+
+fn build_cephalopod_problems(input: &Vec<String>) -> Vec<Problem> {
+    let mut problems: Vec<Problem> = Vec::new();
+    let mut current_numbers: Vec<u16> = Vec::new();
+    let mut current_method: Option<Method> = None;
+
+    let max_len = input.iter().map(|line| line.len()).max().unwrap();
+
+    for col_idx in (0..max_len).rev() {
+        let mut number_chars: Vec<char> = Vec::new();
+        let mut operator_char: Option<char> = None;
+        let mut has_content = false;
+
+        for (row_idx, line) in input.iter().enumerate() {
+            if col_idx < line.len() {
+                let ch = line.chars().nth(col_idx).unwrap();
+
+                if ch != ' ' {
+                    has_content = true;
+
+                    if row_idx == input.len() - 1 {
+                        operator_char = Some(ch);
+                    } else {
+                        number_chars.push(ch);
+                    }
+                }
+            }
+        }
+
+        if !has_content {
+            if !current_numbers.is_empty() && current_method.is_some() {
+                problems.push(Problem {
+                    input: current_numbers,
+                    method: current_method.unwrap(),
+                });
+                current_numbers = Vec::new();
+                current_method = None;
+            }
+        } else {
+            if !number_chars.is_empty() {
+                let number_str: String = number_chars.iter().collect();
+                let number = number_str.parse::<u16>().unwrap();
+                current_numbers.push(number);
+            }
+
+            if let Some(op) = operator_char {
+                current_method = Some(match op {
+                    '+' => Method::ADDITION,
+                    '*' => Method::MULTIPLICATION,
+                    _ => panic!("Unknown method"),
+                });
+            }
+        }
+    }
+
+    if !current_numbers.is_empty() && current_method.is_some() {
+        problems.push(Problem {
+            input: current_numbers,
+            method: current_method.unwrap(),
+        });
     }
 
     problems
