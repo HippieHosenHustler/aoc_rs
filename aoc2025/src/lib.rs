@@ -5,6 +5,7 @@ mod day04;
 mod day05;
 mod day06;
 mod day07;
+mod day08;
 
 pub fn solve(day: u32, input: &str) {
     shared::register_days!(day, input, {
@@ -15,5 +16,6 @@ pub fn solve(day: u32, input: &str) {
         5 => day05,
         6 => day06,
         7 => day07,
+        8 => day08,
     });
 }
