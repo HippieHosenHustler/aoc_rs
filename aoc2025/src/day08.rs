@@ -59,56 +59,55 @@ pub fn solve(input: &str) -> (String, String) {
     let lines = lines_to_vec(input);
 
     let points: Vec<Point> = lines.into_iter().map(Point::from_string).collect();
+    let distances_sorted = find_all_distances_sorted(&points);
 
-    let part_1 = solve_part_1(points);
+    let part_1 = solve_part_1(&distances_sorted);
+    let part_2 = solve_part_2(&distances_sorted);
 
-    (part_1, String::new())
+    (part_1, part_2)
 }
 
-fn solve_part_1(points: Vec<Point>) -> String {
+fn solve_part_1(distances: &[Distance]) -> String {
     let mut circuits: Vec<Circuit> = Vec::new();
 
-    find_all_distances_sorted(&points)
-        .into_iter()
-        .take(1000)
-        .for_each(|distance| {
-            let mut circuit_from_idx = Option::None;
-            let mut circuit_to_idx = Option::None;
+    distances.into_iter().take(1000).for_each(|distance| {
+        let mut circuit_from_idx = Option::None;
+        let mut circuit_to_idx = Option::None;
 
-            for (idx, circuit) in circuits.iter().enumerate() {
-                if circuit.points.contains(distance.from) {
-                    circuit_from_idx = Some(idx);
-                }
-                if circuit.points.contains(distance.to) {
-                    circuit_to_idx = Some(idx);
-                }
+        for (idx, circuit) in circuits.iter().enumerate() {
+            if circuit.points.contains(distance.from) {
+                circuit_from_idx = Some(idx);
             }
+            if circuit.points.contains(distance.to) {
+                circuit_to_idx = Some(idx);
+            }
+        }
 
-            match (circuit_from_idx, circuit_to_idx) {
-                (Some(c_from), Some(c_to)) => {
-                    if c_from != c_to {
-                        let points_to_add: Vec<&Point> =
-                            circuits[c_to].points.iter().cloned().collect();
-                        for point in points_to_add {
-                            circuits[c_from].points.insert(point);
-                        }
-                        circuits.remove(c_to);
+        match (circuit_from_idx, circuit_to_idx) {
+            (Some(c_from), Some(c_to)) => {
+                if c_from != c_to {
+                    let points_to_add: Vec<&Point> =
+                        circuits[c_to].points.iter().cloned().collect();
+                    for point in points_to_add {
+                        circuits[c_from].points.insert(point);
                     }
-                }
-                (Some(c_from), None) => {
-                    circuits[c_from].points.insert(distance.to);
-                }
-                (None, Some(c_to)) => {
-                    circuits[c_to].points.insert(distance.from);
-                }
-                (None, None) => {
-                    let mut new_circuit = Circuit::new();
-                    new_circuit.points.insert(distance.from);
-                    new_circuit.points.insert(distance.to);
-                    circuits.push(new_circuit);
+                    circuits.remove(c_to);
                 }
             }
-        });
+            (Some(c_from), None) => {
+                circuits[c_from].points.insert(distance.to);
+            }
+            (None, Some(c_to)) => {
+                circuits[c_to].points.insert(distance.from);
+            }
+            (None, None) => {
+                let mut new_circuit = Circuit::new();
+                new_circuit.points.insert(distance.from);
+                new_circuit.points.insert(distance.to);
+                circuits.push(new_circuit);
+            }
+        }
+    });
 
     circuits.sort_by(|a, b| b.size().cmp(&a.size()));
 
@@ -118,6 +117,59 @@ fn solve_part_1(points: Vec<Point>) -> String {
         .map(|c| c.size())
         .product::<usize>()
         .to_string()
+}
+
+fn solve_part_2(distances: &[Distance]) -> String {
+    let mut circuits: Vec<Circuit> = Vec::new();
+
+    let mut result: u64 = 0;
+
+    distances.into_iter().for_each(|distance| {
+        let circuits_count = circuits.len();
+
+        let mut circuit_from_idx = Option::None;
+        let mut circuit_to_idx = Option::None;
+
+        for (idx, circuit) in circuits.iter().enumerate() {
+            if circuit.points.contains(distance.from) {
+                circuit_from_idx = Some(idx);
+            }
+            if circuit.points.contains(distance.to) {
+                circuit_to_idx = Some(idx);
+            }
+        }
+
+        match (circuit_from_idx, circuit_to_idx) {
+            (Some(c_from), Some(c_to)) => {
+                if c_from != c_to {
+                    let points_to_add: Vec<&Point> =
+                        circuits[c_to].points.iter().cloned().collect();
+                    for point in points_to_add {
+                        circuits[c_from].points.insert(point);
+                    }
+                    circuits.remove(c_to);
+                }
+            }
+            (Some(c_from), None) => {
+                circuits[c_from].points.insert(distance.to);
+            }
+            (None, Some(c_to)) => {
+                circuits[c_to].points.insert(distance.from);
+            }
+            (None, None) => {
+                let mut new_circuit = Circuit::new();
+                new_circuit.points.insert(distance.from);
+                new_circuit.points.insert(distance.to);
+                circuits.push(new_circuit);
+            }
+        }
+
+        if circuits_count != 1 && circuits.len() == 1 {
+            result = distance.from.x as u64 * distance.to.x as u64;
+        }
+    });
+
+    result.to_string()
 }
 
 fn find_all_distances(points: &[Point]) -> Vec<Distance> {
